@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LTI Working</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h2>IT'S WORKING</h2>
+    <table>
+        <tr th:each="par : ${#request.getParameterNames()}">
+            <td th:text="${par}">javax.servlet.context.tempdir</td>
+            <td>
+               <ul th:each="v: ${#request.getParameterValues(par)}">
+                   <li th:text="${v}"></li>
+               </ul> 
+            </td>
+        </tr>
+    </table>    
+</body>
+</html>

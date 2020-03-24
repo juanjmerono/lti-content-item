@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LTI Select Item</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script>
+        function validateForm() {
+            let selected = document.querySelector('input[name="chooseid"]:checked');
+            if (selected) {
+                let cinput = document.querySelector('input[name="content_items"]');
+                var obj = JSON.parse(cinput.value);
+                obj['@graph'][0].custom.video = selected.value;
+                cinput.value = JSON.stringify(obj);
+                return true;
+            } else {
+                alert('Selecciona un video de la lista');
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>SELECCIONA UN ELEMENTO</h2>
+    <form name="f1" th:action="${#request.getParameter('content_item_return_url')}" method="POST" onsubmit="return validateForm()">
+        <input type="radio" name="chooseid" value="v1">Video 1</input>
+        <input type="radio" name="chooseid" value="v2">Video 2</input>
+        <input type="radio" name="chooseid" value="v3">Video 3</input>
+        <input type="radio" name="chooseid" value="v4">Video 4</input>
+        <input type="hidden" name="content_items" th:value="${#request.getAttribute('contentitems')}"/>
+        <input type="hidden" name="data" value="{}"/>
+        <input type="hidden" name="lti_message_type" value="ContentItemSelection"/>
+        <input type="hidden" name="lti_version" value="LTI-1p0"/>
+        <input type="submit"/>
+    </form>
+</body>
+</html>
