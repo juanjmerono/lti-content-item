@@ -24,20 +24,6 @@ public class LtiWeb {
 			} else {
 				String mtype = request.getParameter("lti_message_type");
 				if ("ContentItemSelectionRequest".equals(mtype)) {
-					// Pensado para seleccionar un único elemento
-					request.setAttribute("contentitems",
-					"{"+
-						"\"@context\":\"http://purl.imsglobal.org/ctx/lti/v1/ContentItem\","+
-						"\"@graph\":["+
-						   "{"+
-							  "\"mediaType\":\"application/vnd.ims.lti.v1.ltilink\","+
-							  "\"@type\":\"LtiLinkItem\","+
-							   "\"title\":\"Deep link to video\","+ // ESTO ES LO QUE PONE EN EL TEXTO DEL LINK EN EL EDITOR
-							  "\"custom\": {"+
-									"\"video\": \"id1\","+ // ESTE ES EL ID DEL VIDEO QUE NECESITAS LUEGO
-									"\"tool\": \"/lti/video.html\""+ // ESTO PUEDE SER LA PAGINA A LA QUE ACCEDE
-						  	  	"}"+
-							 "}]}");
 					return "selectitem";
 				} else {
 					return "index";

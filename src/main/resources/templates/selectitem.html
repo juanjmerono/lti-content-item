@@ -4,32 +4,69 @@
     <title>LTI Select Item</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script>
+        // JSON Content_Items
+        var citems = {"@context":"http://purl.imsglobal.org/ctx/lti/v1/ContentItem","@graph":[]};
         function validateForm() {
+            let cinput = document.querySelector('input[name="content_items"]');
             let selected = document.querySelector('input[name="chooseid"]:checked');
             if (selected) {
-                let cinput = document.querySelector('input[name="content_items"]');
-                var obj = JSON.parse(cinput.value);
-                obj['@graph'][0].custom.video = selected.value;
-                cinput.value = JSON.stringify(obj);
+                citems['@graph'].push({
+                    "@id": selected.value,
+                    "mediaType":"application/vnd.ims.lti.v1.ltilink",
+                    "@type":"LtiLinkItem",
+                    "title":"Ver video "+selected.value, // Texto que se pone en el link
+                    "custom": { // Parametros que pasa a la llamada desde el link
+                        "video": selected.value,
+                        "tool": "/lti/video.html"
+                    }
+                });
+                console.log('One item selected!!');
+                cinput.value = JSON.stringify(citems);
                 return true;
             } else {
-                alert('Selecciona un video de la lista');
-                return false;
+                var chk_arr =  document.querySelectorAll("input[name='mchooseid']:checked");
+                if (chk_arr.length > 0) {
+                    chk_arr.forEach( el =>
+                        citems['@graph'].push({
+                            "@id": el.value,
+                            "mediaType":"application/vnd.ims.lti.v1.ltilink",
+                            "@type":"LtiLinkItem",
+                            "title":"Ver video "+el.value, // Texto que se pone en el link
+                            "custom": { // Parametros que pasa a la llamada desde el link
+                                "video": el.value,
+                                "tool": "/lti/video.html"
+                            }
+                        })
+                    );
+                    console.log('Multiple item selected!!');
+                    console.log(citems);
+                    cinput.value = JSON.stringify(citems);
+                    return true;
+                } else {
+                    alert('Selecciona un video de la lista');
+                    return false;
+                }
             }
         }
     </script>
 </head>
 <body>
-    <h2>SELECCIONA UN ELEMENTO</h2>
     <form name="f1" th:action="${#request.getParameter('content_item_return_url')}" method="POST" onsubmit="return validateForm()">
+        <h2>SELECCIONA UN ELEMENTO DE AQUI</h2>
         <input type="radio" name="chooseid" value="v1">Video 1</input>
         <input type="radio" name="chooseid" value="v2">Video 2</input>
         <input type="radio" name="chooseid" value="v3">Video 3</input>
         <input type="radio" name="chooseid" value="v4">Video 4</input>
-        <input type="hidden" name="content_items" th:value="${#request.getAttribute('contentitems')}"/>
+        <h2>O VARIOS ELEMENTOS DE AQUI</h2>
+        <input type="checkbox" name="mchooseid" value="mA">Video A</input>
+        <input type="checkbox" name="mchooseid" value="mB">Video B</input>
+        <input type="checkbox" name="mchooseid" value="mC">Video C</input>
+        <input type="checkbox" name="mchooseid" value="mD">Video D</input>
+        <input type="hidden" name="content_items" value=""/>
         <input type="hidden" name="data" value="{}"/>
         <input type="hidden" name="lti_message_type" value="ContentItemSelection"/>
         <input type="hidden" name="lti_version" value="LTI-1p0"/>
+        <br/>
         <input type="submit"/>
     </form>
 </body>
